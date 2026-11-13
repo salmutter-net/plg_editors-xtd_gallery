@@ -6,7 +6,7 @@
         <element>gallery</element>
         <type>plugin</type>
         <folder>editors-xtd</folder>
-        <client>administrator</client>
+        <client>site</client>
         <version>0.2.1</version>
         <infourl title="Release notes">https://github.com/salmutter-net/plg_editors-xtd_gallery/releases/tag/v0.2.1</infourl>
         <downloads>
