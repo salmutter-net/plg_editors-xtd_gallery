@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" version="4.0" group="editors-xtd" method="upgrade">
     <name>plg_editors-xtd_gallery</name>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <creationDate>2026.11.13</creationDate>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <copyright>Copyright 2026 salmutter.net – DI Philipp Salmutter. All rights reserved.</copyright>

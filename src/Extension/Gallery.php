@@ -129,41 +129,40 @@ final class Gallery extends CMSPlugin implements SubscriberInterface
         $root = JPATH_ROOT . DIRECTORY_SEPARATOR . trim(str_replace('/', DIRECTORY_SEPARATOR, $mediaPath), '/\\');
         $imgExt = ['jpg', 'jpeg', 'gif', 'png', 'webp'];
 
-        // Build a nested tree of directories, each with its direct image count
+        // Build a nested tree of directories, each with its direct image count.
+        // Counts are collected during the same iteration — no glob(), which can
+        // silently return false under open_basedir restrictions on some hosts.
         $tree = [];
+        $nodeByPath = [];
         if (is_dir($root)) {
             $iterator = new \RecursiveIteratorIterator(
                 new \RecursiveDirectoryIterator($root, \FilesystemIterator::SKIP_DOTS),
                 \RecursiveIteratorIterator::SELF_FIRST
             );
             foreach ($iterator as $file) {
-                if (!$file->isDir()) {
-                    continue;
-                }
-                $rel = str_replace(DIRECTORY_SEPARATOR, '/', substr($file->getPathname(), strlen($root) + 1));
-                $count = 0;
-                foreach (glob($file->getPathname() . DIRECTORY_SEPARATOR . '*.*') ?: [] as $f) {
-                    if (in_array(strtolower(pathinfo($f, PATHINFO_EXTENSION)), $imgExt, true)) {
-                        $count++;
+                $path = $file->getPathname();
+                if ($file->isDir()) {
+                    $rel = str_replace(DIRECTORY_SEPARATOR, '/', substr($path, strlen($root) + 1));
+                    $parts = explode('/', $rel);
+                    $ref = &$tree;
+                    foreach ($parts as $i => $part) {
+                        if (!isset($ref[$part])) {
+                            $ref[$part] = ['path' => implode('/', array_slice($parts, 0, $i + 1)), 'count' => 0, 'children' => []];
+                        }
+                        if ($i === count($parts) - 1) {
+                            $nodeByPath[$rel] = &$ref[$part];
+                        }
+                        $ref = &$ref[$part]['children'];
+                    }
+                    unset($ref);
+                } elseif (in_array(strtolower($file->getExtension()), $imgExt, true)) {
+                    $relDir = str_replace(DIRECTORY_SEPARATOR, '/', substr($file->getPath(), strlen($root) + 1));
+                    if (isset($nodeByPath[$relDir])) {
+                        $nodeByPath[$relDir]['count']++;
                     }
                 }
-                $parts = explode('/', $rel);
-                $ref = &$tree;
-                foreach ($parts as $i => $part) {
-                    if (!isset($ref[$part])) {
-                        $ref[$part] = ['path' => implode('/', array_slice($parts, 0, $i + 1)), 'count' => 0, 'children' => []];
-                    }
-                    $ref = &$ref[$part]['children'];
-                }
-                unset($ref);
-                // Set the count on the leaf node
-                $ref = &$tree;
-                foreach ($parts as $part) {
-                    $ref = &$ref[$part];
-                }
-                $ref['count'] = $count;
-                unset($ref);
             }
+            unset($ref, $nodeByPath);
             ksort($tree, SORT_NATURAL | SORT_FLAG_CASE);
         }
 

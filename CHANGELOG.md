@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.1
+- Fix: folder image counts showed 0 on hosts where `glob()` fails (e.g. open_basedir) — counts now collected during the same directory iteration that builds the tree
+
 ## 0.2.0
 - Restructured to namespaced service-provider layout (services/provider.php + src/) for J5.1+/J6 compatibility
 - Button registration via `onEditorButtonsSetup` + `ButtonsRegistry` (fixes missing button on J5.1+); legacy `onDisplay` kept for J4.x
