@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" version="4.0" group="editors-xtd" method="upgrade">
     <name>plg_editors-xtd_gallery</name>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <creationDate>2026.11.13</creationDate>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <copyright>Copyright 2026 salmutter.net – DI Philipp Salmutter. All rights reserved.</copyright>
@@ -9,9 +9,11 @@
     <authorEmail>philipp@slamutter.net</authorEmail>
     <authorUrl>https://salmutter.net/</authorUrl>
     <description>PLG_EDITORS-XTD_GALLERY_XML_DESCRIPTION</description>
+    <namespace path="src">Joomla\Plugin\EditorsXtd\Gallery</namespace>
     <files>
-        <filename plugin="gallery">gallery.php</filename>
         <filename plugin="gallery">index.html</filename>
+        <folder plugin="gallery">services</folder>
+        <folder plugin="gallery">src</folder>
         <folder>language</folder>
     </files>
     <languages>
